@@ -1,37 +1,29 @@
-name: Deploy Static Site to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger deployment only on main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
+    - name: Set up Node.js (optional for certain static sites)
       uses: actions/setup-node@v2
       with:
         node-version: '14'
 
-    - name: Install dependencies (if any)
+    - name: Build static site (optional if using a build process)
       run: |
-        npm install
-
-    - name: Build the site (if needed)
-      run: |
-        npm run build
+        # If you use a build step (like npm run build), add it here. For a basic site, this is not necessary.
 
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        branch: gh-pages
-        folder: .
-
-    - name: Cleanup
-      run: |
-        rm -rf node_modules
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./  # Publish the current directory (root of your repository)
